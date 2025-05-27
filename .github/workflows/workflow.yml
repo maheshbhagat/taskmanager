@@ -34,3 +34,8 @@ jobs:
       run: |
           ls -ltr
           ls -ltr build/libs
+          
+    - name: Build, tag, and push image to Amazon ECR
+      run: |
+        docker build -t taskmanager:lastest .
+        docker images

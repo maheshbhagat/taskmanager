@@ -11,4 +11,4 @@ COPY build/libs/taskmanager-0.0.1-SNAPSHOT.jar taskmanager-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
 
 # Run the JAR file
-ENTRYPOINT ["java", "-jar", "taskmanager-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app/taskmanager-0.0.1-SNAPSHOT.jar"]

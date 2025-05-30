@@ -68,7 +68,7 @@ jobs:
         image: ${{ steps.build-image.outputs.image }}
     
     - name: Echo Task Definition
-      uses: cat .aws/task-definition.json
+      run: cat ".aws/task-definition.json"
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1

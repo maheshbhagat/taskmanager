@@ -54,6 +54,7 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $APPLICATION_NAME-${IMAGE_TAG:0:7} .
+        docker tag $APPLICATION_NAME-${IMAGE_TAG:0:7} $ECR_REPOSITORY:$APPLICATION_NAME-${IMAGE_TAG:0:7}
         docker push $ECR_REPOSITORY:$APPLICATION_NAME-${IMAGE_TAG:0:7}
         echo "image=$ECR_REPOSITORY:$APPLICATION_NAME-${IMAGE_TAG:0:7}" >> $GITHUB_OUTPUT
     

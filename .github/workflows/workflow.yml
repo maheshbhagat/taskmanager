@@ -6,11 +6,9 @@ on:
 
 env:
   APPLICATION_NAME: "taskmanager"
-  SERVICE_NAME: "svc-${APPLICATION_NAME}"
-  CONTAINER_NAME: "container-${APPLICATION_NAME}"
   AWS_REGION: "ap-south-1"
   ECR_REPOSITORY: "526033727175.dkr.ecr.ap-south-1.amazonaws.com/ecr-task-manager"
-  ECS_CLUSTER: "ecs-micro-services"
+  ECS_CLUSTER: "ecs-demo-cluster"
 
 jobs:
   build:
@@ -31,7 +29,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
 
     - name: Build with Gradle
       run: |
@@ -53,7 +51,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ env.SERVICE_NAME }}
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -63,8 +61,8 @@ jobs:
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ".aws/task-definition.json"
-        container-name: ${{ env.CONTAINER_NAME }}
+        task-definition: .aws/task-definition.json
+        container-name: container-${{ env.APPLICATION_NAME }}
         image: ${{ steps.build-image.outputs.image }}
     
     - name: Echo Task Definition
@@ -74,6 +72,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: ${{ env.SERVICE_NAME }}
+        service: svc-${{ env.APPLICATION_NAME }}
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
